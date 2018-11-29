@@ -17,8 +17,13 @@ public class Schedule extends Entity {
 	/**
 	 * Create an empty schedule. This will automatically handle conflicts.
 	 *
+	 * {int} id - The unique ID number for this document.
+	 * {String} name - The name for this schedule. Schedules can have the same name with
+	 * another schedule.
+	 * {String} term - The term and year associated with this schedule.
+	 *
 	 * @param name The name for this schedule.
-	 * @param term This schedule's term and year. You cannot change this.
+	 * @param term This schedule's term and year.
 	 */
 	public Schedule(String name, String term) {
 		if (ENTITY_REFERENCE == null)
@@ -133,6 +138,11 @@ public class Schedule extends Entity {
 		return false;
 	}
 
+	/**
+	 * Attempt to save or update this document. This will also save the courses inside.
+	 * @param db The database.
+	 * @return This document's ID.
+	 */
 	public long save(Database db) {
 		int id = values.getAsInteger("id");
 
@@ -142,6 +152,12 @@ public class Schedule extends Entity {
 		return super.save(db, "id=" + id);
 	}
 
+	/**
+	 * Attempt to delete this document if it exists in the database. This will not delete the
+	 * courses inside.
+	 * @param db The database.
+	 * @return This document's id.
+	 */
 	public long delete(Database db) {
 		return super.delete(db, "id=" + values.getAsInteger("id"));
 	}

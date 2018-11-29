@@ -96,7 +96,7 @@ public class Entity {
 	 * Save this entity into into the database. If `whereClause` is supplied and something
 	 * was found, it will replace those instead.
 	 *
-	 * @param db The database.
+	 * @param db          The database.
 	 * @param whereClause Will look for documents that fits the criteria given.
 	 */
 	public long save(Database db, String whereClause) {
@@ -114,14 +114,24 @@ public class Entity {
 		return db.createEntity(ENTITY_REFERENCE.DB_NAME, values);
 	}
 
-	public Cursor query(Database db) {
+	/**
+	 * Get what term and year are saved in the database.
+	 *
+	 * @param db The database.
+	 * @return The term and year collection.
+	 */
+	public static Cursor getTerms(Database db) {
+		return db.queryEntity("SELECT DISTINCT term FROM courses");
+	}
+
+	public Cursor query(Database db, String whereClause) {
 		return db.queryEntity("SELECT * FROM " + ENTITY_REFERENCE.DB_NAME);
 	}
 
 	/**
 	 * Delete this. Nothing happens if it doesn't exist in the database.
 	 *
-	 * @param db The database.
+	 * @param db          The database.
 	 * @param whereClause Distinguishes which one is which.
 	 * @return More than 0 (up to the total documents that matched the `whereClause`) if
 	 * successful, otherwise nothing was deleted.

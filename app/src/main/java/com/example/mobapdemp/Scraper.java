@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Scraper extends AsyncTask<Void, Void, Void> {
+	private static String proxy = "https://cors.io/?";
 	private String course, term;
 	private Listener listener;
 
@@ -61,7 +62,7 @@ public class Scraper extends AsyncTask<Void, Void, Void> {
 	protected Void doInBackground(Void... params) {
 		try {
 			URL url = new URL(
-					"https://cors.io/?" +
+					proxy +
 							"http://enroll.dlsu.edu.ph/dlsu/view_actual_count?p_course_code=" +
 							course
 			);
