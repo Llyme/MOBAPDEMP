@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 		   1 second. This will call a `listener` object that has all the data that you
 		   wanted converted into a `Course` entity for convenience.
 		 */
-		new Scraper("LASARE3", new Scraper.Listener() {
+		new Scraper("HUMAART", new Scraper.Listener() {
 			@Override
 			public void call(String term, List<Course> courses) {
 				Log.d("MainActivity", "Term and Year: " + term);

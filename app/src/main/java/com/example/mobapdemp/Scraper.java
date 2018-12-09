@@ -164,7 +164,7 @@ public class Scraper extends AsyncTask<Void, Void, Void> {
 										courseDay.setTime(td.get(4));
 
 										course.addCourseDay(courseDay);
-									} else
+									} else {
 										courseDays = new ArrayList<>();
 
 										for (int i = 0; i < days_length; i++) {
@@ -176,7 +176,11 @@ public class Scraper extends AsyncTask<Void, Void, Void> {
 													String.valueOf(days.charAt(i))
 											);
 											courseDay.setTime(td.get(4));
+
+											course.addCourseDay(courseDay);
 										}
+									}
+
 
 									course.set("room", td.get(5));
 									course.set(
