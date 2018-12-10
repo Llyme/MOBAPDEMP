@@ -1,6 +1,7 @@
 package com.example.mobapdemp.Database.Entities;
 
 import com.example.mobapdemp.Database.Database;
+import com.example.mobapdemp.Table;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class Schedule extends Entity {
 
 	/**
 	 * Create an empty schedule. This will automatically handle conflicts.
-	 *
+	 * <p>
 	 * {int} id - The unique ID number for this document.
 	 * {String} name - The name for this schedule. Schedules can have the same name with
 	 * another schedule.
@@ -55,6 +56,13 @@ public class Schedule extends Entity {
 		courses = new ArrayList<>();
 	}
 
+	public void draw(Table table) {
+		table.clear();
+
+		for (Course course : courses)
+			table.draw(course);
+	}
+
 	/**
 	 * Check if this schedule has a course with the given name.
 	 *
@@ -85,22 +93,8 @@ public class Schedule extends Entity {
 		CourseDay[] courseDays0 = course.getCourseDays();
 
 		for (Course course1 : courses)
-			for (CourseDay courseDay0 : course.getCourseDays())
-				for (CourseDay courseDay1 : course1.getCourseDays())
-					if (courseDay0.getString("day")
-							.equals(courseDay1.getString("day"))) {
-						int start0 = courseDay0.getInt("start"),
-								length0 = courseDay0.getInt("length"),
-								end0 = start0 + length0,
-								start1 = courseDay1.getInt("start"),
-								length1 = courseDay1.getInt("length"),
-								end1 = start1 + length1;
-
-						if ((start0 < end1 && start1 < end0) ||
-								(start0 > start1 && end0 < end1) ||
-								(start1 > start0 && end1 < end0))
-							return true;
-					}
+			if (course.conflictsWith(course1))
+				return true;
 
 		return false;
 	}
@@ -140,6 +134,7 @@ public class Schedule extends Entity {
 
 	/**
 	 * Attempt to save or update this document. This will also save the courses inside.
+	 *
 	 * @param db The database.
 	 * @return This document's ID.
 	 */
@@ -155,6 +150,7 @@ public class Schedule extends Entity {
 	/**
 	 * Attempt to delete this document if it exists in the database. This will not delete the
 	 * courses inside.
+	 *
 	 * @param db The database.
 	 * @return This document's id.
 	 */

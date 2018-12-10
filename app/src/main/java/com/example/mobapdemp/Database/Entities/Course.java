@@ -14,7 +14,7 @@ public class Course extends Entity {
 
 	/**
 	 * Create a new `Course` document entity.
-	 *
+	 * <p>
 	 * {int} id - The unique ID number for this document.
 	 * {int} enrolled - How many people ARE ENROLLED in this slot.
 	 * {int} enroll_cap - How many people CAN ENROLL in this slot.
@@ -60,7 +60,23 @@ public class Course extends Entity {
 	}
 
 	/**
+	 * Check if this course conficts with another course.
+	 *
+	 * @param course The other course.
+	 * @return `true` if does conflict, otherwise `false`.
+	 */
+	public Boolean conflictsWith(Course course) {
+		for (CourseDay courseDay0 : course.getCourseDays())
+			for (CourseDay courseDay1 : courseDays)
+				if (courseDay0.conflictsWith(courseDay1))
+					return true;
+
+		return false;
+	}
+
+	/**
 	 * Add a `CourseDay` document.
+	 *
 	 * @param courseDay The document.
 	 */
 	public void addCourseDay(CourseDay courseDay) {
@@ -69,6 +85,7 @@ public class Course extends Entity {
 
 	/**
 	 * Get all the `CourseDay` documents.
+	 *
 	 * @return The documents.
 	 */
 	public CourseDay[] getCourseDays() {
@@ -77,6 +94,7 @@ public class Course extends Entity {
 
 	/**
 	 * Remove all `CourseDay` documents inside. This will also delete them from the database.
+	 *
 	 * @param db The database.
 	 */
 	public void clearCourseDays(Database db) {
@@ -111,6 +129,7 @@ public class Course extends Entity {
 	/**
 	 * Attempt to save or update this document. This will also save the `CourseDay` documents
 	 * inside.
+	 *
 	 * @param db The database.
 	 * @return This document's id.
 	 */
@@ -128,6 +147,7 @@ public class Course extends Entity {
 	/**
 	 * Attempt to delete this document if it exists in the database. This will also delete
 	 * the `CourseDay` documents inside.
+	 *
 	 * @param db The database.
 	 * @return This document's id.
 	 */

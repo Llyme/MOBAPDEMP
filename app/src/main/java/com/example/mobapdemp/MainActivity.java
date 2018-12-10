@@ -3,6 +3,7 @@ package com.example.mobapdemp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TableLayout;
 
 import com.example.mobapdemp.Database.Database;
 import com.example.mobapdemp.Database.Entities.Course;
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 	private Database database;
+	private Table table;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
 		// Get the database.
 		database = Database.getInstance(this);
 
+		// Draw the table.
+		table = new Table(this, (TableLayout) findViewById(R.id.table));
+
 		Log.d("MainActivity", "Loading...");
 
 		/* Create a synchronous data scraper which takes the data for the given course name.
@@ -38,7 +43,11 @@ public class MainActivity extends AppCompatActivity {
 			public void call(String term, List<Course> courses) {
 				Log.d("MainActivity", "Term and Year: " + term);
 
-				if (courses != null)
+
+				if (courses != null) {
+					// Draw the first course into the table.
+					table.draw(courses.get(0));
+
 					for (Course course : courses) {
 						// Save it to the database.
 						Log.d(
@@ -109,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
 								"Remarks: " + course.getString("remarks")
 						);
 					}
+				}
 			}
 		});
 	}
