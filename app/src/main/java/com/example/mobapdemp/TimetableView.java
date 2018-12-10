@@ -86,7 +86,7 @@ public class TimetableView extends AppCompatActivity {
 //			for (int j = 0; j < courses.size(); j++) {
 //				//Splits into Start and End time
 //				String[] times = courses.get(j).getTime().split(" - ");
-//				Log.d("MainActivity", times[0] + " up to " + times[1]);
+//				Log.d("MainActivity2", times[0] + " up to " + times[1]);
 //
 //				//Variables that change wheather the date is applicable or not
 //				DayApplicableT = false;
