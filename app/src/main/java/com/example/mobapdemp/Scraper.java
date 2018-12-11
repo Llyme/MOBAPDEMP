@@ -208,6 +208,7 @@ public class Scraper extends AsyncTask<Void, Void, Void> {
 
 			listener.call(term, courses);
 		} catch (Exception e) {
+			e.printStackTrace();
 			listener.call(term, null);
 		}
 
