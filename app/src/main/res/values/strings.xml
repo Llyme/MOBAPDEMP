@@ -9,4 +9,9 @@
     <string name="title_activity_main"></string>
     <string name="activity_course_header">There\'s nothing here&#8230;</string>
     <string name="content_main_header">Loading&#8230;</string>
+    <string name="course_name_placeholder">MOBAPDE</string>
+    <string name="course_days_placeholder">T-H</string>
+    <string name="course_time_placeholder">1245-1415</string>
+    <string name="course_prof_placeholder">TIGHE, EDWARD</string>
+    <string name="course_room_placeholder">G301</string>
 </resources>

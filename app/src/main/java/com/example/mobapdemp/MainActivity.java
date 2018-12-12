@@ -23,6 +23,7 @@ import com.example.mobapdemp.Database.Database;
 import com.example.mobapdemp.Database.Entities.Course;
 import com.example.mobapdemp.Database.Entities.Schedule;
 import com.example.mobapdemp.Schedule.ScheduleActivity;
+import com.example.mobapdemp.ViewSummary.ViewSummary;
 
 import java.util.List;
 
@@ -284,7 +285,11 @@ public class MainActivity extends AppCompatActivity
 						startActivity(new Intent(this, CourseActivity.class));
 
 					break;
-			}
+
+				case R.id.nav_summary:
+					startActivity(new Intent(this, ViewSummary.class));
+					break;
+		}
 
 		DrawerLayout drawer = findViewById(R.id.drawer_layout);
 		drawer.closeDrawer(GravityCompat.START);
