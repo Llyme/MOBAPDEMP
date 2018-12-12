@@ -1,6 +1,7 @@
 package com.example.mobapdemp.Course;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +31,7 @@ public class ContactHolder extends RecyclerView.ViewHolder {
 	private ColorStateList color;
 	private ColorStateList color_added;
 
-	public ContactHolder(CourseActivity self, View view, ContactAdapter adapter) {
+	public ContactHolder(final CourseActivity self, View view, ContactAdapter adapter) {
 		super(view);
 
 		this.self = self;
@@ -55,6 +56,10 @@ public class ContactHolder extends RecyclerView.ViewHolder {
 		info.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Intent intent = new Intent(self, CourseInfo.class);
+				CourseInfo.course = course;
+
+				self.startActivity(intent);
 			}
 		});
 	}
