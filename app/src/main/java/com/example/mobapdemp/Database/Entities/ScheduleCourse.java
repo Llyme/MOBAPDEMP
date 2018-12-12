@@ -7,26 +7,19 @@ public class ScheduleCourse extends Entity {
 
 	/**
 	 * Create a Schedule-Course relation.
-	 *
-	 * {int} id - The unique ID number for this document.
+	 * <p>
 	 * {int} schedule_id - The unique ID number for the schedule.
 	 * {int} course_id - The unique ID number for the course.
 	 *
 	 * @param schedule_id The schedule.
-	 * @param course_id The course.
+	 * @param course_id   The course.
 	 */
 	public ScheduleCourse(int schedule_id, int course_id) {
 		if (ENTITY_REFERENCE == null)
 			ENTITY_REFERENCE = new EntityReference(
 					"schedule_courses",
-					"id INTEGER PRIMARY KEY NOT NULL," +
-							"enrolled INTEGER NOT NULL," +
-							"enroll_cap INTEGER NOT NULL," +
-							"name TEXT NOT NULL," +
-							"section TEXT NOT NULL," +
-							"room TEXT NOT NULL," +
-							"remarks TEXT NOT NULL," +
-							"term TEXT NOT NULL",
+					"schedule_id INTEGER NOT NULL," +
+							"course_id INTEGER NOT NULL",
 					new String[]{
 							"id",
 							"schedule_id",
@@ -37,7 +30,6 @@ public class ScheduleCourse extends Entity {
 
 		super.initialize(ENTITY_REFERENCE);
 
-		values.remove("id");
 		values.put("schedule_id", schedule_id);
 		values.put("course_id", course_id);
 	}
@@ -49,7 +41,11 @@ public class ScheduleCourse extends Entity {
 	 * @return This document's id.
 	 */
 	public long save(Database db) {
-		return super.save(db, "id=" + values.getAsInteger("id"));
+		return super.save(
+				db,
+				"schdule_id=" + values.getAsInteger("schedule_id") + " AND " +
+						"course_id=" + values.getAsInteger("course_id")
+		);
 	}
 
 	/**
@@ -59,6 +55,10 @@ public class ScheduleCourse extends Entity {
 	 * @return This document's id.
 	 */
 	public long delete(Database db) {
-		return super.delete(db, "id=" + values.getAsInteger("id"));
+		return super.delete(
+				db,
+				"schdule_id=" + values.getAsInteger("schedule_id") + " AND " +
+						"course_id=" + values.getAsInteger("course_id")
+		);
 	}
 }

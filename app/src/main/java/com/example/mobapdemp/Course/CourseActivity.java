@@ -31,17 +31,13 @@ public class CourseActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_course);
 
 		recycler = findViewById(R.id.course_recycler);
-		adapter = new ContactAdapter();
+		adapter = new ContactAdapter(this);
 		header = findViewById(R.id.activity_course_header);
 
 		if (header_text != null)
 			header.setText(header_text);
 
-		recycler.setLayoutManager(new LinearLayoutManager(
-				this,
-				LinearLayoutManager.VERTICAL,
-				false
-		));
+		recycler.setLayoutManager(new LinearLayoutManager(this));
 		recycler.setAdapter(adapter);
 	}
 
@@ -55,13 +51,6 @@ public class CourseActivity extends AppCompatActivity {
 
 		if (searchView != null) {
 			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-			searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-				@Override
-				public boolean onClose() {
-					//TODO: Reset your views
-					return false;
-				}
-			});
 			searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 				final private int DELAY = 500;
 				private Timer timer;
@@ -98,9 +87,8 @@ public class CourseActivity extends AppCompatActivity {
 
 								new Scraper(course_name, new Scraper.Listener() {
 									@Override
-									public void call(String a, List<Course> b) {
-										final String term = a;
-										final List<Course> courses = b;
+									public void call(final String term,
+									                 final List<Course> courses) {
 
 										if (debounce == null || !debounce.equals(course_name))
 											return;
@@ -139,7 +127,6 @@ public class CourseActivity extends AppCompatActivity {
 								});
 							}
 						}, DELAY);
-					} else if (s.length() == 0) {
 					}
 
 					return false;

@@ -13,8 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactHolder> {
+	private CourseActivity self;
 	private static List<Course> contactList = new ArrayList<>();
 	private ContactHolder selected;
+
+	public ContactAdapter(CourseActivity self) {
+		this.self = self;
+	}
 
 	public void clear() {
 		selected = null;
@@ -46,7 +51,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactHolder> {
 		LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 		View view = inflater.inflate(R.layout.course_model, parent, false);
 
-		return new ContactHolder(view, this);
+		return new ContactHolder(self, view, this);
 	}
 
 	@Override

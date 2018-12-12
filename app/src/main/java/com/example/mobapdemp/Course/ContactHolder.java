@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mobapdemp.Database.Entities.Course;
 import com.example.mobapdemp.Database.Entities.CourseDay;
@@ -18,6 +19,7 @@ import com.example.mobapdemp.R;
 
 public class ContactHolder extends RecyclerView.ViewHolder {
 	final private static int TEXTCOLOR = Color.rgb(0, 0, 0);
+	private CourseActivity self;
 	private Context context;
 	private ContactAdapter adapter;
 	private TextView id, section, room;
@@ -28,18 +30,20 @@ public class ContactHolder extends RecyclerView.ViewHolder {
 	private ColorStateList color;
 	private ColorStateList color_added;
 
-	public ContactHolder(View view, ContactAdapter adapter) {
+	public ContactHolder(CourseActivity self, View view, ContactAdapter adapter) {
 		super(view);
 
-		context = view.getContext();
+		this.self = self;
 		this.adapter = adapter;
+
+		context = view.getContext();
 		id = view.findViewById(R.id.course_model_id);
 		section = view.findViewById(R.id.course_model_section);
 		room = view.findViewById(R.id.course_model_room);
 		add = view.findViewById(R.id.course_model_add);
 		info = view.findViewById(R.id.course_model_info);
 		days = view.findViewById(R.id.course_model_days);
-		color_added = view.getResources().getColorStateList(R.color.slot_added);
+		color_added = view.getResources().getColorStateList(R.color.darkgray);
 
 		add.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -60,8 +64,24 @@ public class ContactHolder extends RecyclerView.ViewHolder {
 			return;
 
 		Schedule schedule = MainActivity.getSelectedSchedule();
+
+		if (!schedule.hasCourse(course.getString("name")) &&
+				schedule.hasConflict(course)) {
+			self.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					Toast.makeText(
+							self,
+							"This course has a conflict with your schedule!",
+							Toast.LENGTH_LONG
+					).show();
+				}
+			});
+
+			return;
+		}
+
 		toggle = flag;
-		Log.d("CourseActivity", "DID " + toggle + course.getInt("id"));
 
 		if (toggle) {
 			schedule.addCourse(course);
@@ -101,11 +121,11 @@ public class ContactHolder extends RecyclerView.ViewHolder {
 			toggle(true);
 
 		if (course.getInt("enrolled") >= course.getInt("enroll_cap")) {
-			color = context.getResources().getColorStateList(R.color.slot_full);
+			color = context.getResources().getColorStateList(R.color.red);
 
 			if (!toggle)
 				add.setBackgroundTintList(color);
 		} else
-			color = context.getResources().getColorStateList(R.color.slot_vacant);
+			color = context.getResources().getColorStateList(R.color.green);
 	}
 }

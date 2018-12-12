@@ -40,12 +40,7 @@ public class Schedule extends Entity {
 			ENTITY_REFERENCE = new EntityReference(
 					"schedules",
 					"id INTEGER PRIMARY KEY NOT NULL," +
-							"enrolled INTEGER NOT NULL," +
-							"enroll_cap INTEGER NOT NULL," +
 							"name TEXT NOT NULL," +
-							"section TEXT NOT NULL," +
-							"room TEXT NOT NULL," +
-							"remarks TEXT NOT NULL," +
 							"term TEXT NOT NULL",
 					INTS,
 					STRINGS
@@ -94,7 +89,7 @@ public class Schedule extends Entity {
 	/**
 	 * Check if this schedule has a course with the given ID.
 	 *
-	 * @param int The ID.
+	 * @param id The ID.
 	 * @return True if the same ID, otherwise False.
 	 */
 	public Boolean hasCourse(int id) {
@@ -197,6 +192,14 @@ public class Schedule extends Entity {
 						values.getAsInteger("id") : null)
 		);
 
+		values.put("id", id);
+
+		// Clear previous Schedule-Course relations.
+		db.deleteEntity(
+				"schedule_courses",
+				"schedule_id=" + id
+		);
+
 		for (Course course : courses) {
 			course.save(db);
 
@@ -217,11 +220,13 @@ public class Schedule extends Entity {
 		return super.delete(db, "id=" + values.getAsInteger("id"));
 	}
 
-	public static void getAll(Database db) {
+	public static List<Schedule> getAll(Database db) {
+		List<Schedule> list = new ArrayList<>();
 		Cursor cursor = db.queryEntity("SELECT * FROM schedules");
 
 		while (cursor.moveToNext()) {
 			Schedule schedule = new Schedule(cursor);
+			list.add(schedule);
 			int schedule_id = schedule.getInt("id");
 
 			Cursor cursor_schedule_courses = db.queryEntity(
@@ -260,5 +265,7 @@ public class Schedule extends Entity {
 					);
 			}
 		}
+
+		return list;
 	}
 }
