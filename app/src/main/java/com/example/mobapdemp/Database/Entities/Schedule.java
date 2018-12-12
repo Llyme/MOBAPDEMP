@@ -1,5 +1,7 @@
 package com.example.mobapdemp.Database.Entities;
 
+import android.database.Cursor;
+
 import com.example.mobapdemp.Database.Database;
 import com.example.mobapdemp.Table;
 
@@ -8,6 +10,13 @@ import java.util.List;
 
 public class Schedule extends Entity {
 	private static EntityReference ENTITY_REFERENCE;
+	final private static String[] INTS = new String[]{
+			"id"
+	};
+	final private static String[] STRINGS = new String[]{
+			"name",
+			"term"
+	};
 
 	/**
 	 * All the courses that this schedule has. The user cannot add a course if it has a conflict
@@ -38,13 +47,8 @@ public class Schedule extends Entity {
 							"room TEXT NOT NULL," +
 							"remarks TEXT NOT NULL," +
 							"term TEXT NOT NULL",
-					new String[]{
-							"id"
-					},
-					new String[]{
-							"name",
-							"term"
-					}
+					INTS,
+					STRINGS
 			);
 
 		super.initialize(ENTITY_REFERENCE);
@@ -54,6 +58,16 @@ public class Schedule extends Entity {
 		values.put("term", term);
 
 		courses = new ArrayList<>();
+	}
+
+	public Schedule(Cursor cursor) {
+		this("", "");
+
+		for (String name : INTS)
+			values.put(name, cursor.getInt(cursor.getColumnIndex(name)));
+
+		for (String name : STRINGS)
+			values.put(name, cursor.getString(cursor.getColumnIndex(name)));
 	}
 
 	public void draw(Table table) {
@@ -70,10 +84,23 @@ public class Schedule extends Entity {
 	 * @return True if there's a course with the same name, otherwise False.
 	 */
 	public Boolean hasCourse(String name) {
-		for (int i = 0; i < courses.size(); i++) {
-			if (courses.get(i).getString("name").equals(name))
+		for (Course course : courses)
+			if (course.getString("name").equals(name))
 				return true;
-		}
+
+		return false;
+	}
+
+	/**
+	 * Check if this schedule has a course with the given ID.
+	 *
+	 * @param int The ID.
+	 * @return True if the same ID, otherwise False.
+	 */
+	public Boolean hasCourse(int id) {
+		for (Course course : courses)
+			if (course.getInt("id") == id)
+				return true;
 
 		return false;
 	}
@@ -100,12 +127,21 @@ public class Schedule extends Entity {
 	}
 
 	/**
-	 * Add a course to the schedule. Conflicts will be checked.
+	 * Add a course to the schedule. Conflicts will be checked. It will automatically remove
+	 * courses with the same name.
 	 *
 	 * @param course The course to be added.
 	 * @return True if it was successfully added, otherwise False.
 	 */
 	public Boolean addCourse(Course course) {
+		for (int i = 0; i < courses.size(); i++)
+			if (courses.get(i).getString("name")
+					.equals(course.getString("name"))) {
+				courses.remove(i);
+
+				break;
+			}
+
 		if (hasConflict(course))
 			return false;
 
@@ -121,13 +157,29 @@ public class Schedule extends Entity {
 	 * @return True if successfully removed, otherwise False.
 	 */
 	public Boolean removeCourse(String name) {
-		for (int i = 0; i < courses.size(); i++) {
+		for (int i = 0; i < courses.size(); i++)
 			if (courses.get(i).getString("name").equals(name)) {
 				courses.remove(i);
 
 				return true;
 			}
-		}
+
+		return false;
+	}
+
+	/**
+	 * Remove a course from the schedule with the same ID. Nothing happens if it doesn't exist.
+	 *
+	 * @param id The ID of the course.
+	 * @return Returns True if successfully removed, otherwise False.
+	 */
+	public Boolean removeCourse(int id) {
+		for (int i = 0; i < courses.size(); i++)
+			if (courses.get(i).getInt("id") == id) {
+				courses.remove(i);
+
+				return true;
+			}
 
 		return false;
 	}
@@ -139,12 +191,19 @@ public class Schedule extends Entity {
 	 * @return This document's ID.
 	 */
 	public long save(Database db) {
-		int id = values.getAsInteger("id");
+		long id = super.save(
+				db,
+				"id=" + (values.containsKey("id") ?
+						values.getAsInteger("id") : null)
+		);
 
-		for (Course course : courses)
+		for (Course course : courses) {
 			course.save(db);
 
-		return super.save(db, "id=" + id);
+			new ScheduleCourse((int) id, course.getInt("id")).save(db);
+		}
+
+		return id;
 	}
 
 	/**
@@ -156,5 +215,50 @@ public class Schedule extends Entity {
 	 */
 	public long delete(Database db) {
 		return super.delete(db, "id=" + values.getAsInteger("id"));
+	}
+
+	public static void getAll(Database db) {
+		Cursor cursor = db.queryEntity("SELECT * FROM schedules");
+
+		while (cursor.moveToNext()) {
+			Schedule schedule = new Schedule(cursor);
+			int schedule_id = schedule.getInt("id");
+
+			Cursor cursor_schedule_courses = db.queryEntity(
+					"SELECT id, course_id FROM schedule_courses " +
+							"WHERE schedule_id=" + schedule_id
+			);
+
+			while (cursor_schedule_courses.moveToNext()) {
+				int schedule_course_id = cursor_schedule_courses.getInt(
+						cursor_schedule_courses.getColumnIndex("id")
+				);
+				int course_id = cursor_schedule_courses.getInt(
+						cursor_schedule_courses.getColumnIndex("course_id")
+				);
+
+				Cursor cursor_courses = db.queryEntity(
+						"SELECT * FROM courses " +
+								"WHERE id=" + course_id
+				);
+
+				if (cursor_courses.moveToNext()) {
+					Course course = new Course(cursor_courses);
+					schedule.addCourse(course);
+
+					Cursor cursor_course_days = db.queryEntity(
+							"SELECT * FROM course_days " +
+									"WHERE course_id=" + course_id
+					);
+
+					while (cursor_course_days.moveToNext())
+						course.addCourseDay(new CourseDay(cursor_course_days));
+				} else
+					db.deleteEntity(
+							"schedule_courses",
+							"id=" + schedule_course_id
+					);
+			}
+		}
 	}
 }

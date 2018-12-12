@@ -34,7 +34,7 @@
 				<action android:name="android.intent.action.SEARCH" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".ScheduleActivity">
+		<activity android:name=".Schedule.ScheduleActivity">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value=".MainActivity" />

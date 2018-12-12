@@ -1,7 +1,6 @@
 package com.example.mobapdemp;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.example.mobapdemp.Database.Entities.Course;
 import com.example.mobapdemp.Database.Entities.CourseDay;
@@ -69,8 +68,6 @@ public class Scraper extends AsyncTask<Void, Void, Void> {
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.connect();
-
-			Log.d("Scraper", "Collecting data for `" + course + "`...");
 
 			try {
 				Thread.sleep(1000);

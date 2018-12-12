@@ -13,17 +13,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactHolder> {
-	private List<Course> contactList;
-
-	public ContactAdapter() {
-		contactList = new ArrayList<>();
-	}
+	private static List<Course> contactList = new ArrayList<>();
+	private ContactHolder selected;
 
 	public void clear() {
+		selected = null;
 		final int size = contactList.size();
 		contactList.clear();
 
 		notifyItemRangeRemoved(0, size);
+	}
+
+	public void toggle(ContactHolder holder, Boolean flag) {
+		if (!flag) {
+			if (selected == holder)
+				selected = null;
+		} else {
+			if (selected != null) {
+				selected.toggle(false);
+			}
+
+			selected = holder;
+		}
 	}
 
 	public void add(Course course) {
@@ -35,7 +46,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactHolder> {
 		LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 		View view = inflater.inflate(R.layout.course_model, parent, false);
 
-		return new ContactHolder(view);
+		return new ContactHolder(view, this);
 	}
 
 	@Override

@@ -11,11 +11,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mobapdemp.Course.CourseActivity;
 import com.example.mobapdemp.Database.Database;
 import com.example.mobapdemp.Database.Entities.Course;
 import com.example.mobapdemp.Database.Entities.Schedule;
+import com.example.mobapdemp.Schedule.ScheduleActivity;
 
 import java.util.List;
 
@@ -60,10 +62,15 @@ public class MainActivity extends AppCompatActivity
 		if (selectedSchedule != null) {
 			header.setText(selectedSchedule.getString("term"));
 			setTitle(selectedSchedule.getString("name"));
+
+			selectedSchedule.draw(table);
 		} else
 			new Scraper("", new Scraper.Listener() {
 				@Override
 				public void call(String term, List<Course> courses) {
+					if (selectedSchedule != null)
+						return;
+
 					final String txt = term;
 
 					selectedSchedule = new Schedule(DEFAULT_NAME, term);
@@ -116,6 +123,21 @@ public class MainActivity extends AppCompatActivity
 	public boolean onNavigationItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.nav_course:
+				if (selectedSchedule == null) {
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(
+									getApplicationContext(),
+									"System is still loading. Please wait.",
+									Toast.LENGTH_SHORT
+							).show();
+						}
+					});
+
+					break;
+				}
+
 				startActivity(new Intent(this, CourseActivity.class));
 				break;
 

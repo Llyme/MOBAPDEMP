@@ -20,6 +20,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class CourseActivity extends AppCompatActivity {
+	private static String header_text;
 	private RecyclerView recycler;
 	private ContactAdapter adapter;
 	private TextView header;
@@ -29,9 +30,12 @@ public class CourseActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_course);
 
-		recycler = findViewById(R.id.recycler);
+		recycler = findViewById(R.id.course_recycler);
 		adapter = new ContactAdapter();
 		header = findViewById(R.id.activity_course_header);
+
+		if (header_text != null)
+			header.setText(header_text);
 
 		recycler.setLayoutManager(new LinearLayoutManager(
 				this,
@@ -102,32 +106,32 @@ public class CourseActivity extends AppCompatActivity {
 											return;
 
 										debounce = null;
-										adapter.clear();
 
 										runOnUiThread(new Runnable() {
 											@Override
 											public void run() {
+												adapter.clear();
+
 												if (term == null) {
-													header.setText("Oh no! No internet access!");
+													header_text = "Oh no! The server is offline!";
+													header.setText(header_text);
 
 													return;
 												}
 
 												if (courses != null) {
-													header.setText(
+													header_text =
 															term + "\n" + course_name + " - " +
-																	courses.size() + " slot(s)"
-													);
+															courses.size() + " slot(s)";
 
 													for (Course course : courses)
 														adapter.add(course);
-												} else {
-													header.setText(
+												} else
+													header_text =
 															term + "\n" + course_name +
-																	" - no slots"
-													);
-												}
+																	" - no slots";
 
+												header.setText(header_text);
 												adapter.notifyDataSetChanged();
 											}
 										});
@@ -137,6 +141,7 @@ public class CourseActivity extends AppCompatActivity {
 						}, DELAY);
 					} else if (s.length() == 0) {
 					}
+
 					return false;
 				}
 

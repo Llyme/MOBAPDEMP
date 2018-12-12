@@ -8,6 +8,7 @@ import com.example.mobapdemp.Database.Entities.Course;
 import com.example.mobapdemp.Database.Entities.CourseDay;
 import com.example.mobapdemp.Database.Entities.Entity;
 import com.example.mobapdemp.Database.Entities.Schedule;
+import com.example.mobapdemp.Database.Entities.ScheduleCourse;
 
 public class OpenHelper extends SQLiteOpenHelper {
 	private static OpenHelper instance;
@@ -17,9 +18,10 @@ public class OpenHelper extends SQLiteOpenHelper {
 
 	// Create sample entities.
 	private static Entity[] ENTITIES = new Entity[]{
-			new Course(null),
+			new Course(""),
 			new CourseDay(),
-			new Schedule(null, null)
+			new Schedule(null, null),
+			new ScheduleCourse(0, 0)
 	};
 
 	public OpenHelper(Context context) {

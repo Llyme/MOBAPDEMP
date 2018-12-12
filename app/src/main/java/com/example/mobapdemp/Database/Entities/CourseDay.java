@@ -1,9 +1,21 @@
 package com.example.mobapdemp.Database.Entities;
 
+import android.database.Cursor;
+
 import com.example.mobapdemp.Database.Database;
 
 public class CourseDay extends Entity {
 	private static EntityReference ENTITY_REFERENCE;
+	final private static String[] INTS = new String[]{
+			"id",
+			"course_id",
+			"start",
+			"length"
+	};
+	final private static String[] STRINGS = new String[]{
+			"professor",
+			"day"
+	};
 
 	/**
 	 * Create a `CourseDay` document. As the name suggests, this represents a course's
@@ -27,21 +39,23 @@ public class CourseDay extends Entity {
 							"length INTEGER NOT NULL," +
 							"professor TEXT NOT NULL," +
 							"day TEXT NOT NULL",
-					new String[]{
-							"id",
-							"course_id",
-							"start",
-							"length"
-					},
-					new String[]{
-							"professor",
-							"day"
-					}
+					INTS,
+					STRINGS
 			);
 
 		super.initialize(ENTITY_REFERENCE);
 
 		values.remove("id");
+	}
+
+	public CourseDay(Cursor cursor) {
+		this();
+
+		for (String name : INTS)
+			values.put(name, cursor.getInt(cursor.getColumnIndex(name)));
+
+		for (String name : STRINGS)
+			values.put(name, cursor.getString(cursor.getColumnIndex(name)));
 	}
 
 	/**

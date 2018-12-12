@@ -9,6 +9,18 @@ import java.util.List;
 
 public class Course extends Entity {
 	private static EntityReference ENTITY_REFERENCE;
+	final private static String[] INTS = new String[]{
+			"id",
+			"enrolled",
+			"enroll_cap"
+	};
+	final private static String[] STRINGS = new String[]{
+			"name",
+			"section",
+			"room",
+			"remarks",
+			"term"
+	};
 
 	private List<CourseDay> courseDays;
 
@@ -37,18 +49,8 @@ public class Course extends Entity {
 							"room TEXT NOT NULL," +
 							"remarks TEXT NOT NULL," +
 							"term TEXT NOT NULL",
-					new String[]{
-							"id",
-							"enrolled",
-							"enroll_cap"
-					},
-					new String[]{
-							"name",
-							"section",
-							"room",
-							"remarks",
-							"term"
-					}
+					INTS,
+					STRINGS
 			);
 
 		super.initialize(ENTITY_REFERENCE);
@@ -57,6 +59,16 @@ public class Course extends Entity {
 		values.put("name", name);
 
 		courseDays = new ArrayList<>();
+	}
+
+	public Course(Cursor cursor) {
+		this("");
+
+		for (String name : INTS)
+			values.put(name, cursor.getInt(cursor.getColumnIndex(name)));
+
+		for (String name : STRINGS)
+			values.put(name, cursor.getString(cursor.getColumnIndex(name)));
 	}
 
 	/**

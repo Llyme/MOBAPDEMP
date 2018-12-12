@@ -11,7 +11,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginStart="8dp"
 		android:layout_marginTop="8dp"
-		android:backgroundTint="#0f9f3f"
+		android:backgroundTint="#0F9F3F"
 		android:text="+"
 		android:textColor="#ffffff"
 		android:textSize="20dp"

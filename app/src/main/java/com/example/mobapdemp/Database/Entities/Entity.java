@@ -124,10 +124,6 @@ public class Entity {
 		return db.queryEntity("SELECT DISTINCT term FROM courses");
 	}
 
-	public Cursor query(Database db, String whereClause) {
-		return db.queryEntity("SELECT * FROM " + ENTITY_REFERENCE.DB_NAME);
-	}
-
 	/**
 	 * Delete this. Nothing happens if it doesn't exist in the database.
 	 *

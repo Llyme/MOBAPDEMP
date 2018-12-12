@@ -3,15 +3,30 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:showIn="navigation_view">
 
-	<group android:checkableBehavior="single">
-		<item
-			android:id="@+id/nav_course"
-			android:checkable="false"
-			android:title="Courses" />
-		<item
-			android:id="@+id/nav_sched"
-			android:checkable="false"
-			android:title="Schedules" />
-	</group>
+	<item android:title="Schedules">
+		<menu>
+			<item
+				android:id="@+id/nav_new"
+				android:checkable="false"
+				android:title="New" />
+			<item
+				android:id="@+id/nav_save"
+				android:checkable="false"
+				android:title="Save" />
+			<item
+				android:id="@+id/nav_sched"
+				android:checkable="false"
+				android:title="Load" />
+		</menu>
+	</item>
+
+	<item android:title="Courses">
+		<menu>
+			<item
+				android:id="@+id/nav_course"
+				android:checkable="false"
+				android:title="Search" />
+		</menu>
+	</item>
 
 </menu>
