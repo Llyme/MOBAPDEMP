@@ -11,17 +11,16 @@
     android:paddingLeft="32dp"
     android:paddingRight="32dp">
 
-    <TextView
-        android:id="@+id/tvCourseCode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/course_name_placeholder"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+	<TextView
+		android:id="@+id/tvCourseCode"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="4dp"
+		android:layout_marginEnd="8dp"
+		android:textSize="24sp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayoutParent"
@@ -42,19 +41,18 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvCourseProf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="108dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:text="@string/course_prof_placeholder"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvCourseCode" />
+	        <TextView
+		        android:id="@+id/tvCourseProf"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginStart="108dp"
+		        android:layout_marginTop="16dp"
+		        android:layout_marginEnd="8dp"
+		        android:textAlignment="center"
+		        app:layout_constraintEnd_toEndOf="parent"
+		        app:layout_constraintHorizontal_bias="0.0"
+		        app:layout_constraintStart_toStartOf="parent"
+		        app:layout_constraintTop_toBottomOf="@+id/tvCourseCode" />
 
             <TextView
                 android:id="@+id/tvDetails"

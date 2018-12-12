@@ -115,16 +115,6 @@ public class Entity {
 	}
 
 	/**
-	 * Get what term and year are saved in the database.
-	 *
-	 * @param db The database.
-	 * @return The term and year collection.
-	 */
-	public static Cursor getTerms(Database db) {
-		return db.queryEntity("SELECT DISTINCT term FROM courses");
-	}
-
-	/**
 	 * Delete this. Nothing happens if it doesn't exist in the database.
 	 *
 	 * @param db          The database.

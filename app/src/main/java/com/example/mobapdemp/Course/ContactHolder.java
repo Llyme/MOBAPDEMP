@@ -57,7 +57,26 @@ public class ContactHolder extends RecyclerView.ViewHolder {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(self, CourseInfo.class);
-				CourseInfo.course = course;
+
+				for (String name : new String[]{"name", "section", "room"})
+					intent.putExtra(name, course.getString(name));
+
+				for (String name : new String[]{"id", "enrolled", "enroll_cap"})
+					intent.putExtra(name, course.getInt(name));
+
+				CourseDay[] courseDays = course.getCourseDays();
+				intent.putExtra("course_days", courseDays.length);
+
+				for (int i = 0; i < courseDays.length; i++) {
+					CourseDay courseDay = courseDays[i];
+
+					intent.putExtra(
+							"course_day" + i,
+							courseDay.getString("day") + " " +
+									courseDay.readableTime() + "\n" +
+									courseDay.getString("professor")
+					);
+				}
 
 				self.startActivity(intent);
 			}

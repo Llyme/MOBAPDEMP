@@ -21,25 +21,21 @@ public class CourseInfo extends Activity {
 			R.id.course_info_enrolled,
 			R.id.course_info_enroll_cap
 	};
-	public static Course course;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_course_info);
 
-		Log.d("CourseInfo", "HELLO");
-		if (course != null)
-			return;
-		Log.d("CourseInfo", "There");
+		Bundle extras = getIntent().getExtras();
 
 		String[] str = new String[]{
-				course.getString("name"),
-				String.valueOf(course.getInt("id")),
-				course.getString("section"),
-				course.getString("room"),
-				String.valueOf(course.getInt("enrolled")),
-				String.valueOf(course.getInt("enroll_cap"))
+				extras.getString("name", ""),
+				String.valueOf(extras.getInt("id", 0)),
+				extras.getString("section", ""),
+				extras.getString("room", ""),
+				String.valueOf(extras.getInt("enrolled", 0)),
+				String.valueOf(extras.getInt("enroll_cap", 0))
 		};
 
 		for (int i = 0; i < RES_ID.length; i++)
@@ -47,14 +43,11 @@ public class CourseInfo extends Activity {
 
 		LinearLayout days = findViewById(R.id.course_info_days);
 
-		for (CourseDay courseDay : course.getCourseDays()) {
+		for (int i = 0; i < extras.getInt("course_days", 0); i++) {
 			TextView day = new TextView(this);
-			day.setTextSize(12);
+			day.setTextSize(16);
 			day.setTextColor(TEXTCOLOR);
-			day.setText(
-					courseDay.getString("day") + " " +
-							courseDay.readableTime()
-			);
+			day.setText(extras.getString("course_day" + i, ""));
 			days.addView(day);
 		}
 	}

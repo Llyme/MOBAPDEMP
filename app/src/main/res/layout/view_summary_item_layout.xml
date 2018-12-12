@@ -10,55 +10,50 @@
     android:paddingLeft="32dp"
     android:paddingRight="32dp">
 
-        <TextView
-            android:id="@+id/tvCourseCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:text="@string/course_name_placeholder"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+	<TextView
+		android:id="@+id/tvCourseCode"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="4dp"
+		android:textSize="24sp"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvCourseDays"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginEnd="20dp"
-            android:text="@string/course_days_placeholder"
-            app:layout_constraintEnd_toStartOf="@+id/tvCourseTime"
-            app:layout_constraintTop_toTopOf="parent" />
+	<TextView
+		android:id="@+id/tvCourseDays"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="6dp"
+		android:layout_marginEnd="20dp"
+		app:layout_constraintEnd_toStartOf="@+id/tvCourseTime"
+		app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvCourseTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/course_time_placeholder"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+	<TextView
+		android:id="@+id/tvCourseTime"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="6dp"
+		android:layout_marginEnd="16dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvCourseProf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="12dp"
-            android:text="@string/course_prof_placeholder"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCourseCode" />
+	<TextView
+		android:id="@+id/tvCourseProf"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="4dp"
+		android:layout_marginTop="12dp"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/tvCourseCode" />
 
-        <TextView
-            android:id="@+id/tvCourseRoom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="56dp"
-            android:text="@string/course_room_placeholder"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCourseTime" />
+	<TextView
+		android:id="@+id/tvCourseRoom"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20dp"
+		android:layout_marginEnd="56dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/tvCourseTime" />
 
         <LinearLayout
             android:id="@+id/expanded_view_summary_item_layout"

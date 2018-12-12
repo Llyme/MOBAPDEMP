@@ -155,6 +155,22 @@ public class Course extends Entity {
 	}
 
 	/**
+	 * Get all term and years that were saved in the database.
+	 * @param db The database
+	 * @return A list of strings.
+	 */
+	public static List<String> getTerms(Database db) {
+		List<String> list = new ArrayList<>();
+
+		Cursor cursor = db.queryEntity("SELECT DISTINCT term FROM courses");
+
+		while (cursor.moveToNext())
+			list.add(cursor.getString(cursor.getColumnIndex("term")));
+
+		return list;
+	}
+
+	/**
 	 * Attempt to save or update this document. This will also save the `CourseDay` documents
 	 * inside.
 	 *

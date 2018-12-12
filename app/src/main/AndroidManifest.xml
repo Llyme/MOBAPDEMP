@@ -38,7 +38,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".ChangeTrimester"></activity>
+	    <activity android:name=".Course.CourseInfo">
+		    <meta-data
+			    android:name="android.support.PARENT_ACTIVITY"
+			    android:value=".Course.CourseActivity" />
+	    </activity>
     </application>
 
 </manifest>

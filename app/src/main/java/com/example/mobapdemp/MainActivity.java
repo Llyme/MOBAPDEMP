@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity
 	public static String currentTerm;
 	private static Schedule selectedSchedule;
 	private TextView header;
+	private boolean loading = false;
 
 	public static Schedule getSelectedSchedule() {
 		return selectedSchedule;
@@ -82,26 +84,35 @@ public class MainActivity extends AppCompatActivity
 
 			header.setText(currentTerm);
 			setTitle(DEFAULT_NAME);
-		} else
+		} else {
+			loading = true;
+
 			new Scraper(null, "", new Scraper.Listener() {
 				@Override
 				public void call(final String term, List<Course> courses) {
+					loading = false;
+					currentTerm = term;
+
 					if (selectedSchedule != null)
 						return;
 
-					currentTerm = term;
-
-					selectedSchedule = new Schedule(DEFAULT_NAME, term);
+					if (term != null)
+						selectedSchedule = new Schedule(DEFAULT_NAME, term);
 
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							header.setText(term);
-							setTitle(DEFAULT_NAME);
+							header.setText(
+									term != null ? term : "Failed to request term and year."
+							);
+
+							if (term != null)
+								setTitle(DEFAULT_NAME);
 						}
 					});
 				}
 			});
+		}
 	}
 
 	@Override
@@ -169,7 +180,7 @@ public class MainActivity extends AppCompatActivity
 	@SuppressWarnings("StatementWithEmptyBody")
 	@Override
 	public boolean onNavigationItemSelected(MenuItem item) {
-		if (selectedSchedule == null)
+		if (loading)
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
