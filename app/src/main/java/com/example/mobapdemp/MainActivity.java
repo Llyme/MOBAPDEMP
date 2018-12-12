@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity
 
 		// Get the database.
 		if (database == null) {
-			deleteDatabase("kunoichi-database");
 			database = Database.getInstance(this);
 		}
 
@@ -291,7 +290,11 @@ public class MainActivity extends AppCompatActivity
 					});
 				else
 					startActivity(new Intent(this, CourseActivity.class));
+				break;
 
+
+			case R.id.nav_ChangeTrimester:
+				startActivity(new Intent(this, ChangeTrimester.class));
 				break;
 		}
 
