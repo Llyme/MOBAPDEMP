@@ -21,6 +21,10 @@
 				android:id="@+id/nav_rename"
 				android:checkable="false"
 				android:title="Rename" />
+			<item
+				android:id="@+id/nav_ChangeTrimester"
+				android:checkable="false"
+				android:title="Change Trimesters"/>
 		</menu>
 	</item>
 
