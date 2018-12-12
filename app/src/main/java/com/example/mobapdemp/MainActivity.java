@@ -217,14 +217,17 @@ public class MainActivity extends AppCompatActivity
 					break;
 
 				case R.id.nav_save:
-					selectedSchedule.save(database);
+					if (selectedSchedule != null)
+						selectedSchedule.save(database);
 
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
 							Toast.makeText(
 									getApplicationContext(),
-									"Schedule successfully saved.",
+									selectedSchedule == null ?
+											"You don't have a schedule loaded." :
+											"Schedule successfully saved.",
 									Toast.LENGTH_SHORT
 							).show();
 						}
@@ -237,35 +240,47 @@ public class MainActivity extends AppCompatActivity
 					break;
 
 				case R.id.nav_rename:
-
-					LayoutInflater inflater = getLayoutInflater();
-					final View view = inflater.inflate(R.layout.schedule_rename, null);
-
-					showDialog(
-							this,
-							"Rename",
-							view,
-							"Rename",
-							"Cancel",
-							new Runnable() {
-								@Override
-								public void run() {
-									String name = ((TextView) view
-											.findViewById(R.id.schedule_rename_text))
-											.getText().toString();
-
-									selectedSchedule.set("name", name);
-									selectedSchedule.save(database);
-									setTitle(name);
-
-									Toast.makeText(
-											getApplicationContext(),
-											"Successfully renamed schedule.",
-											Toast.LENGTH_LONG
-									).show();
-								}
+					if (selectedSchedule == null)
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								Toast.makeText(
+										getApplicationContext(),
+										"You don't have a schedule loaded.",
+										Toast.LENGTH_SHORT
+								).show();
 							}
-					);
+						});
+					else {
+						LayoutInflater inflater = getLayoutInflater();
+						final View view = inflater.inflate(R.layout.schedule_rename, null);
+
+						showDialog(
+								this,
+								"Rename",
+								view,
+								"Rename",
+								"Cancel",
+								new Runnable() {
+									@Override
+									public void run() {
+										String name = ((TextView) view
+												.findViewById(R.id.schedule_rename_text))
+												.getText().toString();
+
+										selectedSchedule.set("name", name);
+										selectedSchedule.save(database);
+										setTitle(name);
+
+										Toast.makeText(
+												getApplicationContext(),
+												"Successfully renamed schedule.",
+												Toast.LENGTH_LONG
+										).show();
+									}
+								}
+						);
+					}
 
 					break;
 
@@ -276,7 +291,7 @@ public class MainActivity extends AppCompatActivity
 							public void run() {
 								Toast.makeText(
 										getApplicationContext(),
-										"System is still loading. Please wait.",
+										"You don't have a schedule loaded.",
 										Toast.LENGTH_SHORT
 								).show();
 							}
@@ -289,7 +304,7 @@ public class MainActivity extends AppCompatActivity
 				case R.id.nav_summary:
 					startActivity(new Intent(this, ViewSummary.class));
 					break;
-		}
+			}
 
 		DrawerLayout drawer = findViewById(R.id.drawer_layout);
 		drawer.closeDrawer(GravityCompat.START);
