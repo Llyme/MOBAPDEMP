@@ -94,6 +94,7 @@ public class ContactHolder extends RecyclerView.ViewHolder {
 		}
 
 		adapter.toggle(this, toggle);
+		MainActivity.redraw();
 	}
 
 	public void set(Course course) {

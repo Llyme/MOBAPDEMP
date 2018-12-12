@@ -17,7 +17,7 @@ public class ScheduleActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_schedule);
 
 		recycler = findViewById(R.id.schedule_recycler);
-		adapter = new ContactAdapter();
+		adapter = new ContactAdapter(this);
 
 		recycler.setLayoutManager(new LinearLayoutManager(this));
 		recycler.setAdapter(adapter);

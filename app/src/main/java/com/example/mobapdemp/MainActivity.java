@@ -30,14 +30,25 @@ public class MainActivity extends AppCompatActivity
 	final private static String DEFAULT_NAME = "New Schedule";
 
 	public static Database database;
-	private Table table;
+	private static Table table;
 
-	private static String currentTerm;
+	public static String currentTerm;
 	private static Schedule selectedSchedule;
 	private TextView header;
 
 	public static Schedule getSelectedSchedule() {
 		return selectedSchedule;
+	}
+
+	public static void selectSchedule(Schedule schedule) {
+		selectedSchedule = schedule;
+
+		schedule.draw(table);
+	}
+
+	public static void redraw() {
+		if (selectedSchedule != null)
+			selectedSchedule.draw(table);
 	}
 
 	public static void showDialog(final AppCompatActivity activity,
@@ -72,7 +83,7 @@ public class MainActivity extends AppCompatActivity
 			header.setText(currentTerm);
 			setTitle(DEFAULT_NAME);
 		} else
-			new Scraper("", new Scraper.Listener() {
+			new Scraper(null, "", new Scraper.Listener() {
 				@Override
 				public void call(final String term, List<Course> courses) {
 					if (selectedSchedule != null)
@@ -86,10 +97,9 @@ public class MainActivity extends AppCompatActivity
 						@Override
 						public void run() {
 							header.setText(term);
+							setTitle(DEFAULT_NAME);
 						}
 					});
-
-					setTitle(DEFAULT_NAME);
 				}
 			});
 	}
@@ -102,14 +112,9 @@ public class MainActivity extends AppCompatActivity
 
 		/* Load database. */
 
-		/* Delete the previous database. This is for testing only since I didn't want to spam
-		   the database with junk.
-		 */
-		//deleteDatabase("kunoichi-database");
-
 		// Get the database.
 		if (database == null) {
-			deleteDatabase("kunoichi-database");
+			//deleteDatabase("kunoichi-database");
 			database = Database.getInstance(this);
 		}
 
@@ -164,20 +169,20 @@ public class MainActivity extends AppCompatActivity
 	@SuppressWarnings("StatementWithEmptyBody")
 	@Override
 	public boolean onNavigationItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.nav_new:
-				if (selectedSchedule == null)
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							Toast.makeText(
-									getApplicationContext(),
-									"Already created new schedule.",
-									Toast.LENGTH_SHORT
-							).show();
-						}
-					});
-				else
+		if (selectedSchedule == null)
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					Toast.makeText(
+							getApplicationContext(),
+							"System is still loading. Please wait.",
+							Toast.LENGTH_SHORT
+					).show();
+				}
+			});
+		else
+			switch (item.getItemId()) {
+				case R.id.nav_new:
 					showDialog(
 							this,
 							"Are you sure you want to create a new schedule?",
@@ -197,21 +202,9 @@ public class MainActivity extends AppCompatActivity
 								}
 							}
 					);
-				break;
+					break;
 
-			case R.id.nav_save:
-				if (selectedSchedule == null)
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							Toast.makeText(
-									getApplicationContext(),
-									"System is still loading. Please wait.",
-									Toast.LENGTH_SHORT
-							).show();
-						}
-					});
-				else {
+				case R.id.nav_save:
 					selectedSchedule.save(database);
 
 					runOnUiThread(new Runnable() {
@@ -224,27 +217,15 @@ public class MainActivity extends AppCompatActivity
 							).show();
 						}
 					});
-				}
 
-				break;
+					break;
 
-			case R.id.nav_sched:
-				startActivity(new Intent(this, ScheduleActivity.class));
-				break;
+				case R.id.nav_sched:
+					startActivity(new Intent(this, ScheduleActivity.class));
+					break;
 
-			case R.id.nav_rename:
-				if (selectedSchedule == null)
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							Toast.makeText(
-									getApplicationContext(),
-									"System is still loading. Please wait.",
-									Toast.LENGTH_SHORT
-							).show();
-						}
-					});
-				else {
+				case R.id.nav_rename:
+
 					LayoutInflater inflater = getLayoutInflater();
 					final View view = inflater.inflate(R.layout.schedule_rename, null);
 
@@ -273,27 +254,26 @@ public class MainActivity extends AppCompatActivity
 								}
 							}
 					);
-				}
 
-				break;
+					break;
 
-			case R.id.nav_course:
-				if (selectedSchedule == null)
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							Toast.makeText(
-									getApplicationContext(),
-									"System is still loading. Please wait.",
-									Toast.LENGTH_SHORT
-							).show();
-						}
-					});
-				else
-					startActivity(new Intent(this, CourseActivity.class));
+				case R.id.nav_course:
+					if (selectedSchedule == null)
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								Toast.makeText(
+										getApplicationContext(),
+										"System is still loading. Please wait.",
+										Toast.LENGTH_SHORT
+								).show();
+							}
+						});
+					else
+						startActivity(new Intent(this, CourseActivity.class));
 
-				break;
-		}
+					break;
+			}
 
 		DrawerLayout drawer = findViewById(R.id.drawer_layout);
 		drawer.closeDrawer(GravityCompat.START);

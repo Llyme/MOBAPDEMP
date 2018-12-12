@@ -14,19 +14,20 @@ public class CourseDay extends Entity {
 	};
 	final private static String[] STRINGS = new String[]{
 			"professor",
-			"day"
+			"day",
+			"term"
 	};
 
 	/**
 	 * Create a `CourseDay` document. As the name suggests, this represents a course's
 	 * assigned day. Courses may have multiple `CourseDay` documents.
 	 * <p>
-	 * {int} id - The unique ID number for this document.
 	 * {int} course_id - The associated `Course` document's id.
 	 * {int} start - The starting time in minutes (0730 = 7*60 + 30 = 450).
 	 * {int} length - The total duration for the assigned day in minutes (end - start).
 	 * {String} professor - The professor's name.
 	 * {String} day - The assigned day. This may also have specific dates.
+	 * {String} term - The term associated with this `CourseDay`.
 	 * (M = Monday; T = Tuesday; W = Wednesday; H = Thursday; F = Friday; S = Saturday)
 	 */
 	public CourseDay() {
@@ -38,7 +39,8 @@ public class CourseDay extends Entity {
 							"start INTEGER NOT NULL," +
 							"length INTEGER NOT NULL," +
 							"professor TEXT NOT NULL," +
-							"day TEXT NOT NULL",
+							"day TEXT NOT NULL," +
+							"term TEXT NOT NULL",
 					INTS,
 					STRINGS
 			);
@@ -128,7 +130,10 @@ public class CourseDay extends Entity {
 	 * @return This document's id.
 	 */
 	public long save(Database db) {
-		return super.save(db, "id=" + values.getAsInteger("id"));
+		return super.save(
+				db,
+				"id=" + values.getAsInteger("id")
+		);
 	}
 
 	/**
@@ -138,6 +143,9 @@ public class CourseDay extends Entity {
 	 * @return This document's id.
 	 */
 	public long delete(Database db) {
-		return super.delete(db, "id=" + values.getAsInteger("id"));
+		return super.delete(
+				db,
+				"id=" + values.getAsInteger("id")
+		);
 	}
 }

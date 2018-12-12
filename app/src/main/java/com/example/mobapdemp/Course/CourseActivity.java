@@ -12,6 +12,8 @@ import android.view.MenuInflater;
 import android.widget.TextView;
 
 import com.example.mobapdemp.Database.Entities.Course;
+import com.example.mobapdemp.Database.Entities.Schedule;
+import com.example.mobapdemp.MainActivity;
 import com.example.mobapdemp.R;
 import com.example.mobapdemp.Scraper;
 
@@ -85,7 +87,12 @@ public class CourseActivity extends AppCompatActivity {
 									}
 								});
 
-								new Scraper(course_name, new Scraper.Listener() {
+								Schedule schedule = MainActivity.getSelectedSchedule();
+								String term =
+										schedule != null ?
+												schedule.getString("term") : null;
+
+								new Scraper(term, course_name, new Scraper.Listener() {
 									@Override
 									public void call(final String term,
 									                 final List<Course> courses) {
@@ -110,7 +117,7 @@ public class CourseActivity extends AppCompatActivity {
 												if (courses != null) {
 													header_text =
 															term + "\n" + course_name + " - " +
-															courses.size() + " slot(s)";
+																	courses.size() + " slot(s)";
 
 													for (Course course : courses)
 														adapter.add(course);

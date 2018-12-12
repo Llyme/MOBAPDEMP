@@ -13,10 +13,21 @@ import com.example.mobapdemp.R;
 import java.util.List;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactHolder> {
+	private ScheduleActivity self;
 	private static List<Schedule> contactList;
 
-	public ContactAdapter() {
+	public ContactAdapter(ScheduleActivity self) {
+		this.self = self;
+
 		contactList = Schedule.getAll(MainActivity.database);
+	}
+
+	public void remove(Schedule schedule) {
+		if (contactList.contains(schedule)) {
+			contactList.remove(schedule);
+
+			notifyItemRangeRemoved(0, 1);
+		}
 	}
 
 	@Override
@@ -24,12 +35,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactHolder> {
 		LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 		View view = inflater.inflate(R.layout.schedule_model, parent, false);
 
-		return new ContactHolder(view);
+		return new ContactHolder(view, self, this);
 	}
 
 	@Override
 	public void onBindViewHolder(@NonNull ContactHolder holder, final int position) {
-		holder.set(contactList.get(position).getString("name"));
+		holder.set(contactList.get(position));
 	}
 
 	@Override

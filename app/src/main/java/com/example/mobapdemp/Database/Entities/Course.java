@@ -41,7 +41,7 @@ public class Course extends Entity {
 		if (ENTITY_REFERENCE == null)
 			ENTITY_REFERENCE = new EntityReference(
 					"courses",
-					"id INTEGER PRIMARY KEY NOT NULL," +
+					"id INTEGER NOT NULL," +
 							"enrolled INTEGER NOT NULL," +
 							"enroll_cap INTEGER NOT NULL," +
 							"name TEXT NOT NULL," +
@@ -55,7 +55,6 @@ public class Course extends Entity {
 
 		super.initialize(ENTITY_REFERENCE);
 
-		values.remove("id");
 		values.put("name", name);
 
 		courseDays = new ArrayList<>();
@@ -128,14 +127,31 @@ public class Course extends Entity {
 	 * @param term        The term.
 	 * @return All course slots.
 	 */
-	public static Cursor getCourses(Database db,
-	                                String course_name,
-	                                String term) {
-		return db.queryEntity(
+	public static List<Course> getAll(Database db,
+	                                  String course_name,
+	                                  String term) {
+		List<Course> courses = new ArrayList<>();
+		Cursor cursor_courses = db.queryEntity(
 				"SELECT * FROM courses WHERE " +
-						"course_name=\"" + course_name + "\" AND" +
+						"name=\"" + course_name + "\" AND " +
 						"term=\"" + term + "\""
 		);
+
+		while (cursor_courses.moveToNext()) {
+			Course course = new Course(cursor_courses);
+			courses.add(course);
+
+			Cursor cursor_course_days = db.queryEntity(
+					"SELECT * FROM course_days WHERE " +
+							"course_id=" + course.getInt("id") + " AND " +
+							"term=\"" + course.getString("term") + "\""
+			);
+
+			while (cursor_course_days.moveToNext())
+				course.addCourseDay(new CourseDay(cursor_course_days));
+		}
+
+		return courses;
 	}
 
 	/**
@@ -150,6 +166,7 @@ public class Course extends Entity {
 
 		for (CourseDay courseDay : courseDays) {
 			courseDay.set("course_id", id);
+			courseDay.set("term", values.getAsString("term"));
 			courseDay.save(db);
 		}
 
@@ -166,10 +183,8 @@ public class Course extends Entity {
 	public long delete(Database db) {
 		int id = values.getAsInteger("id");
 
-		for (CourseDay courseDay : courseDays) {
-			courseDay.set("course_id", id);
+		for (CourseDay courseDay : courseDays)
 			courseDay.delete(db);
-		}
 
 		return super.delete(db, "id=" + values.getAsInteger("id"));
 	}

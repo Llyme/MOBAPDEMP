@@ -21,7 +21,6 @@ public class ScheduleCourse extends Entity {
 					"schedule_id INTEGER NOT NULL," +
 							"course_id INTEGER NOT NULL",
 					new String[]{
-							"id",
 							"schedule_id",
 							"course_id"
 					},
@@ -43,7 +42,7 @@ public class ScheduleCourse extends Entity {
 	public long save(Database db) {
 		return super.save(
 				db,
-				"schdule_id=" + values.getAsInteger("schedule_id") + " AND " +
+				"schedule_id=" + values.getAsInteger("schedule_id") + " AND " +
 						"course_id=" + values.getAsInteger("course_id")
 		);
 	}

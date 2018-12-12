@@ -14,11 +14,11 @@ import java.util.List;
 
 public class Scraper extends AsyncTask<Void, Void, Void> {
 	private static String proxy = "https://cors.io/?";
-	private String course, term;
+	private String course_name, term;
 	private Listener listener;
 
 	public interface Listener {
-		void call(String a, List<Course> courses);
+		void call(String term, List<Course> courses);
 	}
 
 	/**
@@ -27,11 +27,11 @@ public class Scraper extends AsyncTask<Void, Void, Void> {
 	 * @param course   The course's name.
 	 * @param listener The function that will be called.
 	 */
-	public Scraper(String course, Listener listener) {
+	public Scraper(String term, String course, Listener listener) {
 		super();
 
-		this.course = course;
-		this.term = "";
+		this.course_name = course;
+		this.term = term;
 		this.listener = listener;
 
 		this.execute();
@@ -63,11 +63,34 @@ public class Scraper extends AsyncTask<Void, Void, Void> {
 			URL url = new URL(
 					proxy +
 							"http://enroll.dlsu.edu.ph/dlsu/view_actual_count?p_course_code=" +
-							course
+							course_name
 			);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.connect();
+
+
+			/* Load from database. */
+
+			if ((term != null && !term.equals(MainActivity.currentTerm)) ||
+					/* No internet connection. Check database. */
+					connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+				List<Course> courses = Course.getAll(
+						MainActivity.database,
+						course_name,
+						term
+				);
+
+				if (courses.size() > 0)
+					listener.call(term, courses);
+				else
+					listener.call(null, null);
+
+				return null;
+			}
+
+
+			/* Let the request construct itself. */
 
 			try {
 				Thread.sleep(1000);
@@ -75,11 +98,8 @@ public class Scraper extends AsyncTask<Void, Void, Void> {
 				e.printStackTrace();
 			}
 
-			if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-				listener.call(null, null);
 
-				return null;
-			}
+			/* Read request. */
 
 			BufferedReader reader =
 					new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -88,7 +108,7 @@ public class Scraper extends AsyncTask<Void, Void, Void> {
 			// Course slots collected.
 			List<Course> courses = new ArrayList<>();
 			// Course being edited.
-			Course course = new Course(this.course);
+			Course course = null;
 			List<CourseDay> courseDays = new ArrayList<>();
 			// Table data.
 			List<String> td = new ArrayList<>();
@@ -102,8 +122,11 @@ public class Scraper extends AsyncTask<Void, Void, Void> {
 					term = getRelevantData(line);
 
 					// User just wants the term and year.
-					if (this.course.equals(""))
+					if (course_name.length() == 0) {
+						listener.call(term, null);
+
 						break;
+					}
 				} else if (line.contains("<TABLE") || line.contains("<table"))
 					table--;
 				else if (table == 0) {
@@ -121,23 +144,28 @@ public class Scraper extends AsyncTask<Void, Void, Void> {
 								String id = td.get(0);
 
 								if (id.equals("&nbsp;")) {
-									// This is probably a course with specific day and time.
-									String day = td.get(3),
-											time = td.get(4);
+									if (course != null) {
+										// This is probably a course with specific day and time.
+										String day = td.get(3),
+												time = td.get(4);
 
-									CourseDay courseDay = new CourseDay();
-									courseDays = new ArrayList<>();
+										CourseDay courseDay = new CourseDay();
+										courseDays = new ArrayList<>();
 
-									courseDays.add(courseDay);
-									course.addCourseDay(courseDay);
+										courseDays.add(courseDay);
+										course.addCourseDay(courseDay);
 
-									if (!day.equals("&nbsp;"))
-										courseDay.set("day", day);
+										if (!day.equals("&nbsp;"))
+											courseDay.set("day", day);
 
-									if (!time.equals("&nbsp;"))
-										courseDay.setTime(time);
+										if (!time.equals("&nbsp;"))
+											courseDay.setTime(time);
+									}
 								} else {
-									course = new Course(this.course);
+									if (course != null)
+										course.save(MainActivity.database);
+
+									course = new Course(course_name);
 									courses.add(course);
 
 									course.set("term", term);
@@ -202,6 +230,16 @@ public class Scraper extends AsyncTask<Void, Void, Void> {
 					}
 				}
 			}
+
+
+			/* Check for database entries if empty. */
+
+			if (courses.size() == 0)
+				courses = Course.getAll(
+						MainActivity.database,
+						course_name,
+						term
+				);
 
 			listener.call(term, courses);
 		} catch (Exception e) {

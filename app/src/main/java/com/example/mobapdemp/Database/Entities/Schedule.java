@@ -228,23 +228,22 @@ public class Schedule extends Entity {
 			Schedule schedule = new Schedule(cursor);
 			list.add(schedule);
 			int schedule_id = schedule.getInt("id");
+			String term = schedule.getString("term");
 
 			Cursor cursor_schedule_courses = db.queryEntity(
-					"SELECT id, course_id FROM schedule_courses " +
+					"SELECT course_id FROM schedule_courses " +
 							"WHERE schedule_id=" + schedule_id
 			);
 
 			while (cursor_schedule_courses.moveToNext()) {
-				int schedule_course_id = cursor_schedule_courses.getInt(
-						cursor_schedule_courses.getColumnIndex("id")
-				);
 				int course_id = cursor_schedule_courses.getInt(
 						cursor_schedule_courses.getColumnIndex("course_id")
 				);
 
 				Cursor cursor_courses = db.queryEntity(
 						"SELECT * FROM courses " +
-								"WHERE id=" + course_id
+								"WHERE id=" + course_id + " AND " +
+								"term=\"" + term + "\""
 				);
 
 				if (cursor_courses.moveToNext()) {
@@ -253,7 +252,8 @@ public class Schedule extends Entity {
 
 					Cursor cursor_course_days = db.queryEntity(
 							"SELECT * FROM course_days " +
-									"WHERE course_id=" + course_id
+									"WHERE course_id=" + course_id + " AND " +
+									"term=\"" + term + "\""
 					);
 
 					while (cursor_course_days.moveToNext())
@@ -261,7 +261,8 @@ public class Schedule extends Entity {
 				} else
 					db.deleteEntity(
 							"schedule_courses",
-							"id=" + schedule_course_id
+							"schedule_id=" + schedule_id + " AND " +
+									"course_id=" + course_id
 					);
 			}
 		}
